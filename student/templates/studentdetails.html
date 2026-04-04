@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Person Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0b0e1a;
+      --card: #131728;
+      --border: #1e2540;
+      --accent: #5b6ef5;
+      --accent2: #a78bfa;
+      --text: #e8eaf6;
+      --muted: #6b7280;
+      --row-hover: #1a2038;
+      --badge-bg: #1e2540;
+      --green: #4ade80;
+      --green-bg: rgba(74,222,128,0.06);
+      --green-border: rgba(74,222,128,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: rgba(91, 110, 245, 0.12);
+      top: -100px; left: -100px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: rgba(167, 139, 250, 0.08);
+      bottom: -80px; right: -80px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Header ── */
+    .header { margin-bottom: 36px; }
+
+    .header-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .header-eyebrow .dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .header-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #fff 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-meta {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; }
+
+    thead tr {
+      background: linear-gradient(90deg, rgba(91,110,245,0.12), rgba(167,139,250,0.06));
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      padding: 16px 20px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      text-align: left;
+      white-space: nowrap;
+    }
+    th:first-child { padding-left: 28px; }
+    th:last-child  { padding-right: 28px; text-align: right; }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(30,37,64,0.6);
+      transition: background 0.18s ease;
+      animation: rowIn 0.45s ease both;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--row-hover); }
+    tbody tr:nth-child(1) { animation-delay: 0.05s; }
+    tbody tr:nth-child(2) { animation-delay: 0.10s; }
+    tbody tr:nth-child(3) { animation-delay: 0.15s; }
+    tbody tr:nth-child(4) { animation-delay: 0.20s; }
+    tbody tr:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+    td:first-child { padding-left: 28px; }
+    td:last-child  { padding-right: 28px; text-align: right; }
+
+    /* Name cell with avatar */
+    .name-cell { display: flex; align-items: center; gap: 12px; }
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .name-text { font-weight: 500; }
+
+    /* Age badge */
+    .age-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--badge-bg);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent2);
+    }
+
+    /* Job badge */
+    .job-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(91,110,245,0.08);
+      border: 1px solid rgba(91,110,245,0.2);
+      font-size: 13px;
+      font-weight: 500;
+      color: #93a8f4;
+    }
+    .job-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* Salary */
+    .salary {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--green);
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      padding: 5px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+    }
+    .salary-symbol {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 1px;
+    }
+
+    /* ── Empty state ── */
+    .empty { padding: 80px 20px; text-align: center; }
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+    .empty p { color: var(--muted); font-size: 15px; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      th, td { padding: 12px 10px; font-size: 12px; }
+      th:first-child, td:first-child { padding-left: 16px; }
+      th:last-child, td:last-child   { padding-right: 16px; }
+      .header-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-eyebrow">
+      <span class="dot"></span>
+      HR Management
+    </div>
+    <div class="header-row">
+      <div>
+        <h1>Person Details</h1>
+        <p class="header-meta">Employee records — name, age, role &amp; compensation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="card">
+    {% if allMembers %}
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Job Description</th>
+          <th>Salary</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for person in allMembers %}
+        <tr>
+          <td>
+            <div class="name-cell">
+              <div class="avatar">{{ person.name|slice:":1" }}</div>
+              <span class="name-text">{{ person.name }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="age-badge">
+              {{ person.age }} yrs
+            </span>
+          </td>
+          <td>
+            <span class="job-badge">
+              <span class="job-dot"></span>
+              {{ person.JobDoes }}
+            </span>
+          </td>
+          <td>
+            <span class="salary">
+              <span class="salary-symbol">₹</span>
+              {{ person.salary }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+      <div class="empty-icon">👤</div>
+      <p>No person details are available.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+</body>
+</html>
